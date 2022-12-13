@@ -48,20 +48,19 @@ class Record:
         birthday_info = ''
 
         for phone in self.phones:
-            print(dir(phone))
-            phones_info += f'{Phone(phone)}, '
+            phones_info += f'{phone.value}, '
 
         if self.birthday:
             birthday_info = f' Birthday : {self.birthday.value}'
 
         return f'{self.name.value} : {phones_info[:-2]}{birthday_info}'
 
-    def add_phone(self, phone_number: Phone):
-        self.phones.append(phone_number)
+    def add_phone(self, phone_number):
+        self.phones.append(Phone(phone_number))
 
     
 
-    def delete_contact(self, phone: Phone):
+    def delete_contact(self, phone):
         try:
             for record_phone in self.phones:
                 if record_phone.value == phone:
@@ -118,9 +117,7 @@ class AddressBook(UserDict):
                 pickle.dump(self.data, file)
 
             with open (filename, "rb") as file:
-                self.data = pickle.load(file)
-                 
-        
+                self.data = pickle.load(file) 
 
 
     def add_record(self, record):

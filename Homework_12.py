@@ -15,18 +15,19 @@ def error_handler(function):
         except IndexError:
             return 'This contact cannot be added, it exists already'
         except TypeError:
-            return 'Unknown command or parametrs, please try again.'
+            return '1Unknown command or parametrs, please try again.'
 
     return wrapper
 
 
 @error_handler
-def hello_func(_):
+def hello_func(*_):
+    
     return 'How can I help you?'
 
 
 @error_handler
-def exit_func(_):
+def exit_func(*_):
     return 'good bye'
 
 
@@ -64,10 +65,29 @@ def search_func(value):
 def show_func():
     contacts = ''
     for key, record in contacts_dict.get_all_record().items():
-        contacts += f'{record.get_info()}\n'
-
+            contacts += f'{record.get_info()}\n'
     return contacts
 
+@error_handler
+def get_contacts(data):
+    data = data.strip()
+    contacts = ''
+    for key, record in contacts_dict.get_all_record().items():
+        for number in record.get_info().split():
+            if number.find(data) != -1:
+                contacts += f'{record.get_info()}\n'
+            else:
+                continue
+        if key.find(data) != -1:
+            contacts += f'{record.get_info()}\n'
+        else:
+            continue
+
+    
+    if contacts:
+        return contacts
+    else:
+        return 'Contact not found'
 
 @error_handler
 def del_func(name):
@@ -86,14 +106,7 @@ def del_phone_func(data):
         return f'Phone {phone} for {name} contact deleted.'
     return f'{name} contact does not have this number'
 
-def get_contacts(data):
-    data = data.strip()
-    for key, value in contacts_dict.data.items():
-        
-        if key.find(data) != - 1 :
-            print("знайшли контакт")
-            return f'Yor contact {key} : {contacts_dict.data[key].valeus}'
-    print('contact not found')
+
     
 
 COMMANDS_DICT = {
