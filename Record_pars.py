@@ -1,4 +1,5 @@
 from collections import UserDict
+from datetime import datetime
 import pickle
   
 class Field:
@@ -35,61 +36,6 @@ class Birthday(Field):
         if birth_date > today:
             raise ValueError("Birthday must be less than current year and date.")
         self._value = value
-
-class AddressBook(UserDict):
-
-
-    def save_to_file(self):
-        filename = "adressbook.txt"
-        with open(filename, "wb" ) as file:
-            pickle.dump(self.data, file)
-
-    def read_from_file(self):
-        filename = "adressbook.txt"
-        try:
-            with open (filename, "rb") as file:
-                print("файл прочитаний")
-                contact = pickle.load(file)
-                return contact
-        except FileNotFoundError:
-            with open(filename, "wb") as file:
-                pickle.dump(self.data, file)
-
-            with open (filename, "rb") as file:
-                print("файл прочитаний")
-                contact = pickle.load(file)
-                return contact
-        
-        
-
-
-    def add_record(self, record):
-        self.data[record.name.value] = record
-
-    def get_all_record(self):
-        return self.data
-
-    def has_record(self, name):
-        return bool(self.data.get(name))
-
-    def get_record(self, name):
-        return self.data.get(name)
-
-    def remove_record(self, name):
-        del self.data[name]
-
-    def search(self, value):
-        if self.has_record(value):
-            return self.get_record(value)
-
-        for record in self.get_all_record().values():
-            for phone in record.phones:
-                if phone.value == value:
-                    return record
-
-        raise ValueError("Contact with this value does not exist.")
-
-
 class Record:
 
     def __init__(self, name):
@@ -102,7 +48,8 @@ class Record:
         birthday_info = ''
 
         for phone in self.phones:
-            phones_info += f'{phone.value}, '
+            print(dir(phone))
+            phones_info += f'{Phone(phone)}, '
 
         if self.birthday:
             birthday_info = f' Birthday : {self.birthday.value}'
@@ -117,7 +64,7 @@ class Record:
     def delete_contact(self, phone: Phone):
         try:
             for record_phone in self.phones:
-                if record_phone == phone:
+                if record_phone.value == phone:
                     self.phones.remove(record_phone)
                     return True
             return False
@@ -151,6 +98,57 @@ class Record:
 
             return (next_birthday.date() - today).days
     
+    
+class AddressBook(UserDict):
+
+
+    def save_to_file(self):
+        filename = "adressbook.txt"
+        with open(filename, "wb" ) as file:
+            pickle.dump(self.data, file)
+
+    def read_from_file(self):
+        filename = "adressbook.txt"
+        try:
+            with open (filename, "rb") as file:
+                self.data = pickle.load(file)
+                
+        except FileNotFoundError:
+            with open(filename, "wb") as file:
+                pickle.dump(self.data, file)
+
+            with open (filename, "rb") as file:
+                self.data = pickle.load(file)
+                 
+        
+
+
+    def add_record(self, record):
+        self.data[record.name.value] = record
+
+    def get_all_record(self):
+        return self.data
+
+    def has_record(self, name):
+        return bool(self.data.get(name))
+
+    def get_record(self, name):
+        return self.data.get(name)
+
+    def remove_record(self, name):
+        del self.data[name]
+
+    def search(self, value):
+        if self.has_record(value):
+            return self.get_record(value)
+
+        for record in self.get_all_record().values():
+            for phone in record.phones:
+                if phone.value == value:
+                    return record
+
+        raise ValueError("Contact with this value does not exist.")
+
     def iterator(self, count = 5):
         page = []
         i = 0
@@ -166,4 +164,5 @@ class Record:
 
         if page:
             yield page
+
 

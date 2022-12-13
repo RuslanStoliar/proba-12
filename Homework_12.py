@@ -86,6 +86,15 @@ def del_phone_func(data):
         return f'Phone {phone} for {name} contact deleted.'
     return f'{name} contact does not have this number'
 
+def get_contacts(data):
+    data = data.strip()
+    for key, value in contacts_dict.data.items():
+        
+        if key.find(data) != - 1 :
+            print("знайшли контакт")
+            return f'Yor contact {key} : {contacts_dict.data[key].valeus}'
+    print('contact not found')
+    
 
 COMMANDS_DICT = {
     'hello': hello_func,
@@ -97,8 +106,10 @@ COMMANDS_DICT = {
     'show all': show_func,
     'phone': search_func,
     'delete phone': del_phone_func,
-    'delete': del_func
+    'delete': del_func,
+    'get_contacts' : get_contacts
 }
+
 
 
 def change_input(user_input):
@@ -126,7 +137,7 @@ def create_data(data):
         raise ValueError('Wrong name.')
     for phone in phones:
         if not phone.isnumeric():
-            raise ValueError('Wrong phones.')
+            raise ValueError('Wrong phones.   ==')
     return name, phones
 
 
@@ -136,7 +147,7 @@ def break_func():
 
 def main():
     
-    contacts_dict.read_from_file
+    contacts_dict.read_from_file()
     while True:
         
         user_input = input('Enter command for bot: ')
